@@ -1,8 +1,6 @@
 import { countries } from './countries.js';
 import { injectGeoField } from './field-injection.js';
-import { readFileSync } from 'fs';
-import { resolve, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { flagsMap } from './flags-inline.js';
 export { countries } from './countries.js';
 export const geoVisibilityPlugin = (pluginConfig) => (config) => {
     const fieldName = pluginConfig.fieldName || 'geoVisibility';
@@ -26,21 +24,17 @@ export const geoVisibilityPlugin = (pluginConfig) => (config) => {
             if (!code || !/^[a-z]{2}(-[a-z]+)?$/.test(code)) {
                 return new Response('Not found', { status: 404 });
             }
-            try {
-                const __dirname = dirname(fileURLToPath(import.meta.url));
-                const flagPath = resolve(__dirname, '..', 'flags', `${code}.svg`);
-                const svg = readFileSync(flagPath, 'utf-8');
-                return new Response(svg, {
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'image/svg+xml',
-                        'Cache-Control': 'public, max-age=31536000, immutable',
-                    },
-                });
-            }
-            catch {
+            const svg = flagsMap.get(code);
+            if (!svg) {
                 return new Response('Not found', { status: 404 });
             }
+            return new Response(svg, {
+                status: 200,
+                headers: {
+                    'Content-Type': 'image/svg+xml',
+                    'Cache-Control': 'public, max-age=31536000, immutable',
+                },
+            });
         },
     };
     return {

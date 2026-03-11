@@ -1,6 +1,6 @@
 {
   "name": "payload-plugin-geo-visibility",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Payload CMS 3 plugin for country-based geo visibility on collection fields",
   "type": "module",
   "main": "dist/index.js",
@@ -20,11 +20,11 @@
     }
   },
   "files": [
-    "dist",
-    "flags"
+    "dist"
   ],
   "scripts": {
-    "build": "tsc && cp src/components/GeoVisibilitySelect/index.scss dist/components/GeoVisibilitySelect/index.scss",
+    "generate:flags": "node scripts/generate-flags-map.mjs",
+    "build": "pnpm generate:flags && tsc && cp src/components/GeoVisibilitySelect/index.scss dist/components/GeoVisibilitySelect/index.scss",
     "build:clean": "pnpm build && rm -rf node_modules"
   },
   "peerDependencies": {
